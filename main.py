@@ -81,7 +81,6 @@ class CreateGame:
         return True
 
 
-
 if __name__ == "__main__":
     new_game = CreateGame()
     new_game.start_game()
