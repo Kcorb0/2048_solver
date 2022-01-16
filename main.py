@@ -1,4 +1,5 @@
-from lib2to3.pgen2.literals import test
+import keyboard
+import sys, os
 import random as rd
 
 
@@ -30,12 +31,12 @@ class CreateGame:
     
     def move_tiles(self, direction):
 
+        # Move up
         if direction == 'w':
             for idxr, row in enumerate(self.grid):
                 for idxc, col in enumerate(row):
                     if col != 0:
                         check = idxr
-
                         while check != 0:
                             if self.grid[check-1][idxc] == 0:
                                 self.grid[check-1][idxc] = col
@@ -43,8 +44,38 @@ class CreateGame:
                             elif self.grid[check-1][idxc] == col:
                                 self.grid[check-1][idxc] = col*2
                                 self.grid[check][idxc] = 0
-                            
                             check -= 1
+        
+        # Move left
+        if direction == 'a':
+            for idxr, row in enumerate(self.grid):
+                for idxc, col in enumerate(row):
+                    if col != 0:
+                        check = idxc
+                        while check != 0:
+                            if self.grid[idxr][check-1] == 0:
+                                self.grid[idxr][check-1] = col
+                                self.grid[idxr][check] = 0
+                            elif self.grid[idxr][check-1] == col:
+                                self.grid[idxr][check-1] = col*2
+                                self.grid[idxr][check] = 0
+                            check -= 1
+    
+    def new_tile(self):
+
+        space = False
+
+        if any(0 in x for x in self.grid):
+            space = True
+
+        while space:
+            x = rd.randint(0, self.grid_size-1)
+            y = rd.randint(0, self.grid_size-1)
+
+            if self.grid[x][y] == 0:
+                self.grid[x][y] = 2
+                break
+            
 
     def check_status(self):
         return True
@@ -54,15 +85,40 @@ class CreateGame:
 if __name__ == "__main__":
     new_game = CreateGame()
     new_game.start_game()
+    os.system('cls')
 
     while new_game.check_status:
-        
+        print('==================')
+
         for row in new_game.grid:
             print(row)
 
+        print('==================')
+
         print("Keys: w=up, s=down, a=left, d=right")
-        action = input("Direction: ")
+        action = ''
+        
+        # Wait for user input
+        while True:
+            
+            if keyboard.is_pressed('w'):
+                action = 'w'
+                break
+
+            if keyboard.is_pressed('a'):
+                action = 'a'
+                break
+
+            if keyboard.is_pressed('q'):
+                new_game.check_status = False
+                break
+            
 
         new_game.move_tiles(action)
+        new_game.new_tile()
+
+        # If game still running clear old grid
+        if new_game.check_status:
+            os.system('cls')
 
         
