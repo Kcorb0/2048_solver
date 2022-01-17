@@ -1,6 +1,7 @@
 import keyboard
 import sys, os
 import random as rd
+import time
 
 
 class CreateGame:
@@ -45,6 +46,21 @@ class CreateGame:
                                 self.grid[check-1][idxc] = col*2
                                 self.grid[check][idxc] = 0
                             check -= 1
+
+        # Move down
+        if direction == 's':
+            for idxr, row in enumerate(self.grid):
+                for idxc, col in enumerate(row):
+                    if col != 0:
+                        check = idxr
+                        while check != self.grid_size-1:
+                            if self.grid[check+1][idxc] == 0:
+                                self.grid[check+1][idxc] = col
+                                self.grid[check][idxc] = 0
+                            elif self.grid[check+1][idxc] == col:
+                                self.grid[check+1][idxc] = col*2
+                                self.grid[check][idxc] = 0
+                            check += 1
         
         # Move left
         if direction == 'a':
@@ -60,6 +76,20 @@ class CreateGame:
                                 self.grid[idxr][check-1] = col*2
                                 self.grid[idxr][check] = 0
                             check -= 1
+        
+        if direction == 'd':
+            for idxr, row in enumerate(self.grid):
+                for idxc, col in enumerate(row):
+                    if col != 0:
+                        check = idxc
+                        while check != self.grid_size-1:
+                            if self.grid[idxr][check+1] == 0:
+                                self.grid[idxr][check+1] = col
+                                self.grid[idxr][check] = 0
+                            elif self.grid[idxr][check+1] == col:
+                                self.grid[idxr][check+1] = col*2
+                                self.grid[idxr][check] = 0
+                            check += 1
     
     def new_tile(self):
 
@@ -104,14 +134,23 @@ if __name__ == "__main__":
                 action = 'w'
                 break
 
+            if keyboard.is_pressed('s'):
+                action = 's'
+                break
+
             if keyboard.is_pressed('a'):
                 action = 'a'
+                break
+            
+            if keyboard.is_pressed('d'):
+                action = 'd'
                 break
 
             if keyboard.is_pressed('q'):
                 new_game.check_status = False
                 break
             
+        time.sleep(.1) # Avoid clicking more than once
 
         new_game.move_tiles(action)
         new_game.new_tile()
