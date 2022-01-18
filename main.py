@@ -106,6 +106,12 @@ class CreateGame:
                 self.grid[x][y] = 2
                 break
             
+    def update_score(self):
+        score = 0
+        for row in self.grid:
+            score += sum(row)
+        
+        self.score = score
 
     def check_status(self):
         return True
@@ -123,6 +129,8 @@ if __name__ == "__main__":
             print(row)
 
         print('==================')
+
+        print(f'Current score {new_game.score}')
 
         print("Keys: w=up, s=down, a=left, d=right")
         action = ''
@@ -154,6 +162,7 @@ if __name__ == "__main__":
 
         new_game.move_tiles(action)
         new_game.new_tile()
+        new_game.update_score()
 
         # If game still running clear old grid
         if new_game.check_status:
